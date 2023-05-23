@@ -1,0 +1,21 @@
+{
+    "application": "eks-dinghytest",
+    "pipelines": [
+        {
+            "application": "eks-dinghytest",
+            "name": "DinghyValidation-Tests",
+            "keepWaitingPipelines": false,
+            "limitConcurrent": true,
+            "stages": [
+                {
+                    "name": "Wait",
+                    "refId": "1",
+                    "requisiteStageRefIds": [],
+                    "type": "wait",
+                    "waitTime": 40
+                }
+            ],
+            "triggers": []
+        }
+    ]
+}
