@@ -16,7 +16,7 @@ spec:
         app: demo
     spec:
       containers:
-        - image: ghcr.io/minhthong582000/arm:main-5064582710
+        - image: ghcr.io/minhthong582000/arm
           name: demo
           ports:
             - containerPort: 8080
@@ -28,3 +28,19 @@ spec:
             requests:
               cpu: 150m
               memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: demo
+  name: demo
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: demo
+  type: ClusterIP
