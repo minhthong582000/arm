@@ -3,17 +3,11 @@
     "pipelines": [
         {
             "application": "dinghytest",
-            "name": "DinghyValidation-Tests",
             "keepWaitingPipelines": false,
             "limitConcurrent": true,
+            "name": "dinghymodule-tests",
             "stages": [
-                {
-                    "name": "Wait",
-                    "refId": "1",
-                    "requisiteStageRefIds": [],
-                    "type": "wait",
-                    "waitTime": 40
-                }
+                {{ module "./dinghy-modules/wait.stage.module" }}
             ],
             "triggers": []
         }
