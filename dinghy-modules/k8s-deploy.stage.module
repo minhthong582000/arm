@@ -1,0 +1,82 @@
+{
+    "application": "{{ var "applicationName" }}",
+    "name": "{{ var "pipelineName" }}",
+    "description": "{{ var "pipelineDescription" ?: "" }}",
+    "keepWaitingPipelines": false,
+    "limitConcurrent": true,
+    "lastModifiedBy": "anonymous",
+    "schema": "1",
+    "spelEvaluator": "v4",
+    "appConfig": {},
+    "expectedArtifacts": [
+        {
+        "defaultArtifact": {
+            "artifactAccount": "docker-registry",
+            "id": "7f01c0ae-4a11-48ca-bb1c-5cf5fcc0853a",
+            "name": "{{ var "imageRegistry" }}/{{ var "imageRepo" }}",
+            "reference": "{{ var "imageRegistry" }}/{{ var "imageRepo" }}:{{ var "imageDefaultTag" }}",
+            "type": "docker/image",
+            "version": "{{ var "imageDefaultTag" }}"
+        },
+        "displayName": "docker-image",
+        "id": "0ca21a87-fe52-470e-8b61-2503ffc868f7",
+        "matchArtifact": {
+            "artifactAccount": "docker-registry",
+            "id": "86e0237b-98fd-431c-a198-cd5c0d497a5a",
+            "name": "{{ var "imageRegistry" }}/{{ var "imageRepo" }}",
+            "type": "docker/image"
+        },
+        "useDefaultArtifact": true,
+        "usePriorArtifact": false
+        }
+    ],
+    "stages": [
+        {
+        "account": "spinnaker",
+        "cloudProvider": "kubernetes",
+        "manifestArtifact": {
+            "artifactAccount": "github",
+            "id": "c8bfdfbe-8d68-40af-b4a6-b83735c4bb8d",
+            "name": "deploy manifest",
+            "reference": "{{ var "manifestContentURL" }}",
+            "type": "github/file",
+            "version": "{{ var "manifestContentGitBranch" }}"
+        },
+        "moniker": {
+            "app": "{{ var "applicationName" }}"
+        },
+        "name": "Deploy (Manifest)",
+        "namespaceOverride": "{{ var "namespace" }}",
+        "refId": "1",
+        "requiredArtifactIds": [
+            "0ca21a87-fe52-470e-8b61-2503ffc868f7"
+        ],
+        "requiredArtifacts": [],
+        "requisiteStageRefIds": [],
+        "skipExpressionEvaluation": false,
+        "source": "artifact",
+        "trafficManagement": {
+            "enabled": false,
+            "options": {
+            "enableTraffic": false,
+            "services": []
+            }
+        },
+        "type": "deployManifest"
+        }
+    ],
+    "triggers": [
+        {
+        "account": {{ var "accountImageRegistry" }},
+        "enabled": true,
+        "expectedArtifactIds": [
+            "0ca21a87-fe52-470e-8b61-2503ffc868f7"
+        ],
+        "organization": {{ var "imageOrganization" }},
+        "registry": "{{ var "imageRegistry" }}",
+        "repository": "{{ var "imageRepo" }}",
+        "tag": "",
+        "type": "docker"
+        }
+    ]
+}
