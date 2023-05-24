@@ -7,7 +7,69 @@
             "limitConcurrent": true,
             "name": "dinghymodule-tests",
             "stages": [
-                {{ module "dinghy-modules/wait.stage.module" }}
+                {
+                    "account": "spinnaker",
+                    "cloudProvider": "kubernetes",
+                    "manifests": [
+                        {
+                            "apiVersion": "apps/v1",
+                            "kind": "Deployment",
+                            "metadata": {
+                                "labels": {
+                                    "app": "demo"
+                                },
+                                "name": "demo-deployment"
+                            },
+                            "spec": {
+                                "replicas": 3,
+                                "selector": {
+                                    "matchLabels": {
+                                        "app": "demo"
+                                    }
+                                },
+                                "template": {
+                                    "metadata": {
+                                        "labels": {
+                                            "app": "demo"
+                                        }
+                                    },
+                                    "spec": {
+                                        "containers": [
+                                            {
+                                                "image": "nginx:1.14.2",
+                                                "name": "demo",
+                                                "ports": [
+                                                    {
+                                                        "containerPort": 80
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "moniker": {
+                        "app": "demo"
+                    },
+                    "name": "Deploy (Manifest)",
+                    "namespaceOverride": "default",
+                    "refId": "1",
+                    "requiredArtifactIds": [],
+                    "requiredArtifacts": [],
+                    "requisiteStageRefIds": [],
+                    "skipExpressionEvaluation": false,
+                    "source": "text",
+                    "trafficManagement": {
+                        "enabled": false,
+                        "options": {
+                        "enableTraffic": false,
+                        "services": []
+                        }
+                    },
+                    "type": "deployManifest"
+                }
             ],
             "triggers": []
         }
