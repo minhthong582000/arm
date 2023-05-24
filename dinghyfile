@@ -7,7 +7,7 @@
             "limitConcurrent": true,
             "name": "dinghymodule-tests",
             "stages": [
-                {{ module "./dinghy-modules/wait.stage.module" }}
+                {{ module "dinghy-modules/wait.stage.module" }}
             ],
             "triggers": []
         }
