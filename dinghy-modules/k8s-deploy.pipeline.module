@@ -38,9 +38,9 @@
             "artifactAccount": "github",
             "id": "c8bfdfbe-8d68-40af-b4a6-b83735c4bb8d",
             "name": "deploy manifest",
-            "reference": "{{ var "manifestContentURL" }}",
+            "reference": "{{ var "manifestsContentURL" }}",
             "type": "github/file",
-            "version": "{{ var "manifestContentGitBranch" }}"
+            "version": "{{ var "manifestsContentGitBranch" }}"
         },
         "moniker": {
             "app": "{{ var "applicationName" }}"
@@ -67,12 +67,12 @@
     ],
     "triggers": [
         {
-        "account": {{ var "accountImageRegistry" }},
+        "account": "{{ var "spinAccountRegistry" }}",
         "enabled": true,
         "expectedArtifactIds": [
             "0ca21a87-fe52-470e-8b61-2503ffc868f7"
         ],
-        "organization": {{ var "imageOrganization" }},
+        "organization": "{{ var "imageOrganization" }}",
         "registry": "{{ var "imageRegistry" }}",
         "repository": "{{ var "imageRepo" }}",
         "tag": "",

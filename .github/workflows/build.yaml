@@ -7,14 +7,14 @@ on:
     paths-ignore:
       - "README.md"
       - "dinghyfile"
-      - "dinghy-modules"
+      - "dinghy-modules/**"
       - "deploy"
   pull_request:
     branches: [main]
     paths-ignore:
       - "README.md"
       - "dinghyfile"
-      - "dinghy-modules"
+      - "dinghy-modules/**"
       - "deploy"
 
 env:
