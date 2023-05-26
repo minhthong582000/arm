@@ -1,6 +1,17 @@
 {
     "application": "dinghytest",
     "pipelines": [
-        
+        {{ module "dinghy-modules/k8s-deploy.pipeline.module"
+            "applicationName" "dinghytest"
+            "pipelineName" "k8s-deploy"
+            "imageRegistry" "ghcr.io"
+            "imageOrganization" "minhthong582000"
+            "imageRepo" "minhthong582000/arm"
+            "imageDefaultTag" "main-5082846759"
+            "manifestsContentURL" "https://api.github.com/repos/minhthong582000/arm/contents/deploy/k8s/deploy.yaml"
+            "manifestsContentGitBranch" "main"
+            "namespace" "default"
+            "spinAccountRegistry": "github-registry"
+        }}
     ]
 }
