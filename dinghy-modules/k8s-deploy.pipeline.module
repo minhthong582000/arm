@@ -67,12 +67,12 @@
     ],
     "triggers": [
         {
-        "account": {{ var "spinAccountRegistry" }},
+        "account": "{{ var "spinAccountRegistry" }}",
         "enabled": true,
         "expectedArtifactIds": [
             "0ca21a87-fe52-470e-8b61-2503ffc868f7"
         ],
-        "organization": {{ var "imageOrganization" }},
+        "organization": "{{ var "imageOrganization" }}",
         "registry": "{{ var "imageRegistry" }}",
         "repository": "{{ var "imageRepo" }}",
         "tag": "",
