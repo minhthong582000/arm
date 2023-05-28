@@ -2,7 +2,7 @@
 variable "states_endpoint" {
   description = "Terraform backend endpoint"
   type        = string
-  default     = "http://minio:9000"
+  default     = "http://localhost:9000"
 }
 
 variable "states_bucket" {
