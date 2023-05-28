@@ -1,7 +1,7 @@
 {
     "application": "dinghytest",
     "pipelines": [
-        {{ module "dinghy-modules/k8s-deploy.pipeline.module"
+        {{ module "dinghy-modules/pipelines/k8s-deploy.pipeline.module"
             "applicationName" "dinghytest"
             "pipelineName" "k8s-deploy"
             "imageRegistry" "ghcr.io"
@@ -11,7 +11,18 @@
             "manifestsContentURL" "https://api.github.com/repos/minhthong582000/arm/contents/deploy/k8s/deploy.yaml"
             "manifestsContentGitBranch" "main"
             "namespace" "default"
+            "spinAccountGithub" "github"
             "spinAccountRegistry" "github-registry"
+        }}
+        ,{{ module "dinghy-modules/pipelines/tf-deploy.pipeline.module"
+            "applicationName" "dinghytest"
+            "pipelineName" "tf-deploy"
+            "spinAccountGitrepo" "gitrepo"
+            "manifestsContentURL" "https://github.com/minhthong582000/arm.git"
+            "manifestsContentGitBranch" "main"
+            "gitWebhookOrg" "minhthong582000"
+            "gitWebhookSecret" "34af7b9d3596ba821ba02ae558f5b5ef9a5340aa"
+            "gitWebhookRepo" "arm"
         }}
     ]
 }

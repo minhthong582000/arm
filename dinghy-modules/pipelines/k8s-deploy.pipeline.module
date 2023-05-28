@@ -35,7 +35,7 @@
         "account": "spinnaker",
         "cloudProvider": "kubernetes",
         "manifestArtifact": {
-            "artifactAccount": "github",
+            "artifactAccount": "{{ var "spinAccountGithub" }}",
             "id": "c8bfdfbe-8d68-40af-b4a6-b83735c4bb8d",
             "name": "deploy manifest",
             "reference": "{{ var "manifestsContentURL" }}",

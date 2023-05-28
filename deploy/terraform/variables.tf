@@ -1,3 +1,22 @@
+########## Terraform Backend Variables ##########
+variable "states_endpoint" {
+  description = "Terraform backend endpoint"
+  type        = string
+  default     = "http://minio:9000"
+}
+
+variable "states_bucket" {
+  description = "Terraform backend bucket"
+  type        = string
+  default     = "mys3bucket/demo/terraform"
+}
+
+variable "states_region" {
+  description = "Terraform backend region"
+  type        = string
+  default     = "us-west-2"
+}
+
 ########## EC2 Variables ##########
 variable "hostname" {
   description = "Hostname of the EC2 instance"

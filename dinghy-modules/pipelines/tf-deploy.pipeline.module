@@ -1,0 +1,109 @@
+{
+    "application": "{{ var "applicationName" }}",
+    "name": "{{ var "pipelineName" }}",
+    "description": "{{ var "pipelineDescription" ?: "" }}",
+    "appConfig": {},
+    "keepWaitingPipelines": false,
+    "limitConcurrent": true,
+    "schema": "1",
+    "spelEvaluator": "v4",
+    "stages": [
+        {{ module "dinghy-modules/stages/tf.stage.module"
+            "name" "Plan"
+            "refId" "1"
+            "artifacts" [
+                {
+                    "account": "{{ var "spinAccountGitrepo" }}",
+                    "artifact": {
+                        "artifactAccount": "{{ var "spinAccountGitrepo" }}",
+                        "id": "5a611316-41ff-46a6-8624-4c08e0470973",
+                        "reference": "{{ var "manifestsContentURL" }}",
+                        "type": "git/repo",
+                        "version": "{{ var "manifestsContentGitBranch" }}"
+                    }
+                }
+            ]
+            "dir" "deploy/terraform"
+            "expectedArtifacts" [
+                {
+                    "defaultArtifact": {
+                        "customKind": true,
+                        "id": "b4ea4576-b58a-4e83-8856-a545ee8b6cf7"
+                    },
+                    "displayName": "planfile",
+                    "id": "69af1006-0536-4f57-98ee-6a820c88aaf3",
+                    "matchArtifact": {
+                        "artifactAccount": "embedded-artifact",
+                        "id": "8f98f099-8136-4645-a37a-0529c4d68958",
+                        "name": "planfile",
+                        "type": "embedded/base64"
+                    },
+                    "useDefaultArtifact": false,
+                    "usePriorArtifact": false
+                }
+            ]
+        }}
+        ,{
+        "failPipeline": true,
+        "judgmentInputs": [],
+        "name": "Manual Judgment",
+        "notifications": [],
+        "refId": "2",
+        "requisiteStageRefIds": [
+            "1"
+        ],
+        "type": "manualJudgment"
+        }
+        ,{{ module "dinghy-modules/stages/tf.stage.module"
+            "name" "Apply"
+            "refId" "3"
+            "requisiteStageRefIds" [
+                "2"
+            ]
+            "artifacts" [
+                {
+                    "account": "{{ var "spinAccountGitrepo" }}",
+                    "artifact": {
+                        "artifactAccount": "{{ var "spinAccountGitrepo" }}",
+                        "id": "01ffe0d4-1261-4a56-b156-0e1ae23645a9",
+                        "reference": "{{ var "manifestsContentURL" }}",
+                        "type": "git/repo",
+                        "version": "{{ var "manifestsContentGitBranch" }}"
+                    }
+                }
+            ]
+            "dir" "deploy/terraform"
+        }}
+        ,{{ module "dinghy-modules/stages/tf.stage.module"
+            "name" "Output"
+            "refId" "4"
+            "requisiteStageRefIds" [
+                "3"
+            ]
+            "artifacts" [
+                {
+                    "account": "{{ var "spinAccountGitrepo" }}",
+                    "artifact": {
+                        "artifactAccount": "{{ var "spinAccountGitrepo" }}",
+                        "id": "3892a231-2d89-474c-b17e-b6101da271f5",
+                        "reference": "{{ var "manifestsContentURL" }}",
+                        "type": "git/repo",
+                        "version": "{{ var "manifestsContentGitBranch" }}"
+                    }
+                }
+            ]
+            "dir" "deploy/terraform"
+        }}
+    ],
+    "triggers": [
+        {
+            "branch": "{{ var "manifestsContentGitBranch" }}",
+            "enabled": true,
+            "project": "{{ var "gitWebhookOrg" }}",
+            "secret": "{{ var "gitWebhookSecret" }}",
+            "slug": "{{ var "gitWebhookRepo" }}",
+            "source": "github",
+            "type": "git"
+        }
+    ]
+}
