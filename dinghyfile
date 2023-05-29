@@ -14,16 +14,5 @@
             "spinAccountGithub" "github"
             "spinAccountRegistry" "github-registry"
         }}
-        # ,{{ module "dinghy-modules/pipelines/tf-deploy.pipeline.module"
-        #     "applicationName" "dinghytest"
-        #     "pipelineName" "tf-deploy"
-        #     "spinProfile" "aws-profile"
-        #     "spinAccountGitrepo" "gitrepo"
-        #     "manifestsContentURL" "https://github.com/minhthong582000/arm.git"
-        #     "manifestsContentGitBranch" "main"
-        #     "gitWebhookOrg" "minhthong582000"
-        #     "gitWebhookSecret" "34af7b9d3596ba821ba02ae558f5b5ef9a5340aa"
-        #     "gitWebhookRepo" "arm"
-        # }}
     ]
 }
