@@ -1,16 +1,16 @@
 {
   "action": "{{ var "action" }}",
   "refId": "{{ var "refId" }}",
-  "requisiteStageRefIds": "{{ var "requisiteStageRefIds" ?: [] }}",
-  "artifacts": "{{ var "artifacts" }}",
-  "backendArtifact": "{{ var "backendArtifact" ?: {} }}",
+  "requisiteStageRefIds": {{ var "requisiteStageRefIds" ?: [] }},
+  "artifacts": {{ var "artifacts" }},
+  "backendArtifact": {{ var "backendArtifact" ?: {} }},
   "dir": "{{ var "dir" }}",
-  "expectedArtifacts": "{{ var "expectedArtifacts" ?: [] }}",
+  "expectedArtifacts": {{ var "expectedArtifacts" ?: [] }},
   "name": "{{ var "name" ?: "Terraform" }}",
-  "overrides": "{{ var "overrides" ?: {} }}",
-  "terraformVersion": "{{ var "terraformVersion" ?: "1.0.9" }}",
+  "overrides": {{ var "overrides" ?: {} }},
+  "terraformVersion": "{{ var "terraformVersion" ?: "0.13.6" }}",
   "profile": "{{ var "profile" ?: "" }}",
   "type": "terraform",
-  "sendNotifications": false,
-  "notifications": "{{ var "notifications" ?: [] }}"
+  "sendNotifications": true,
+  "notifications": {{ var "notifications" ?: [] }}
 }
