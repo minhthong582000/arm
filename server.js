@@ -27,14 +27,6 @@ const PORT = 8080;
 const HOST = '0.0.0.0';
 const app = express();
 
-// Main route
-app.get('/', (req, res) => {
-  // TODO: Use middleware to track the duration of the requests
-  const end = httpRequestDurationMicroseconds.startTimer();
-  res.send('Hello World 11123s33s4');
-  end({ route: req.baseUrl + req.path, code: res.statusCode, method: req.method })
-});
-
 // Metrics route
 app.get('/metrics', async (req, res) => { 
   try {
@@ -44,6 +36,22 @@ app.get('/metrics', async (req, res) => {
 		res.status(500).end(ex);
 	}
 })
+
+// Metrics middleware to track the duration of the requests
+const profilerMiddleware = (req, res, next) => {
+  const end = httpRequestDurationMicroseconds.startTimer()
+  res.once('finish', () => {
+    const duration = end({ route: req.baseUrl + req.path, method: req.method, code: res.statusCode });
+    console.log('Request to %s Duration  %d', req.baseUrl + req.path, duration);
+  });
+  next();
+};
+app.use(profilerMiddleware);
+
+// Main route
+app.get('/', (req, res) => {
+  res.send('Hello World 11123s33s4');
+});
 
 // Start server
 app.listen(PORT, HOST, () => {
