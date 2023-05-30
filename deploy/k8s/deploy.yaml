@@ -5,9 +5,6 @@ metadata:
   labels:
     app: demo
   name: demo-deployment
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/path: "/metrics"
 spec:
   replicas: 2
   selector:
@@ -17,9 +14,13 @@ spec:
     metadata:
       labels:
         app: demo
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
     spec:
       containers:
-        - image: ghcr.io/minhthong582000/arm:main-5120742213
+        - image: ghcr.io/minhthong582000/arm:main-5123845435
           name: demo
           ports:
             - containerPort: 8080

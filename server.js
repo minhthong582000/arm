@@ -25,24 +25,27 @@ register.registerMetric(httpRequestDurationMicroseconds)
 // Constants
 const PORT = 8080;
 const HOST = '0.0.0.0';
-
-// App
 const app = express();
+
+// Main route
 app.get('/', (req, res) => {
+  // TODO: Use middleware to track the duration of the requests
+  const end = httpRequestDurationMicroseconds.startTimer();
   res.send('Hello World 11123s33s4');
+  end({ route: req.baseUrl + req.path, code: res.statusCode, method: req.method })
 });
 
+// Metrics route
 app.get('/metrics', async (req, res) => { 
-  const end = httpRequestDurationMicroseconds.startTimer();
   try {
 		res.set('Content-Type', register.contentType);
 		res.end(await register.metrics());
 	} catch (ex) {
 		res.status(500).end(ex);
 	}
-  end({ route: req.baseUrl + req.path, code: res.statusCode, method: req.method })
 })
 
+// Start server
 app.listen(PORT, HOST, () => {
   console.log(`Running on http://${HOST}:${PORT}`);
 });
