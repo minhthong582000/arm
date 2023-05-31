@@ -3,9 +3,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: demo
+    app: demo-main
     type: main
-  name: demo
+  name: demo-main
 spec:
   replicas: 2
   selector:
