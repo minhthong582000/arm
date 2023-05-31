@@ -23,7 +23,7 @@ spec:
         prometheus.io/port: "8080"
     spec:
       containers:
-        - image: ghcr.io/minhthong582000/arm:main-5128643801
+        - image: ghcr.io/minhthong582000/arm
           name: demo
           ports:
             - containerPort: 8080
