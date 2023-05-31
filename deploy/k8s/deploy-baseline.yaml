@@ -4,19 +4,19 @@ kind: Deployment
 metadata:
   labels:
     app: demo
-    type: main
-  name: demo
+    type: baseline
+  name: demo-baseline
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: demo
-      type: main
+      type: baseline
   template:
     metadata:
       labels:
         app: demo
-        type: main
+        type: baseline
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
@@ -41,8 +41,8 @@ kind: Service
 metadata:
   labels:
     app: demo
-    type: main
-  name: demo-main
+    type: baseline
+  name: demo-canary
 spec:
   ports:
     - name: http
@@ -51,5 +51,5 @@ spec:
       targetPort: 8080
   selector:
     app: demo
-    type: main
+    type: baseline
   type: ClusterIP
