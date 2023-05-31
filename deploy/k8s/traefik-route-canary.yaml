@@ -1,0 +1,19 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: TraefikService
+metadata:
+  name: demo
+spec:
+  weighted:
+    services:
+      - kind: Service
+        name: demo-main
+        port: 8080
+        weight: 8
+      - kind: Service
+        name: demo-canary
+        port: 8080
+        weight: 1
+      - kind: Service
+        name: demo-baseline
+        port: 8080
+        weight: 1

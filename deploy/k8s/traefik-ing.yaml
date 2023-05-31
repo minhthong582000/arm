@@ -1,0 +1,12 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: demo
+spec:
+  routes:
+    - match: Host(`demo.localhost`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: demo
+          kind: TraefikService

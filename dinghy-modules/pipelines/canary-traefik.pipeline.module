@@ -1,0 +1,362 @@
+{
+  "appConfig": {},
+  "expectedArtifacts": [
+    {
+      "defaultArtifact": {
+        "artifactAccount": "docker-registry",
+        "id": "829265c8-9f07-4bd2-8fbf-5a77077245e9",
+        "name": "ghcr.io/minhthong582000/arm",
+        "reference": "ghcr.io/minhthong582000/arm:main-5128643801",
+        "type": "docker/image",
+        "version": "main-5128643801"
+      },
+      "displayName": "docker-image",
+      "id": "2ae88f0b-dee1-46f8-923e-a4fbbff86aba",
+      "matchArtifact": {
+        "artifactAccount": "docker-registry",
+        "id": "560c4d45-dd2f-4f0a-a454-b43416602046",
+        "name": "ghcr.io/minhthong582000/arm",
+        "type": "docker/image"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": false
+    }
+  ],
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "minhthong582000",
+  "limitConcurrent": true,
+  "parameterConfig": [
+    {
+      "default": "false",
+      "description": "Whether to fail the canary analysis or not for testing",
+      "hasOptions": true,
+      "label": "",
+      "name": "FailCanary",
+      "options": [
+        {
+          "value": "true"
+        },
+        {
+          "value": "false"
+        }
+      ],
+      "pinned": false,
+      "required": true
+    }
+  ],
+  "schema": "1",
+  "spelEvaluator": "v4",
+  "stages": [
+    {
+      "account": "spinnaker",
+      "app": "demo",
+      "cloudProvider": "kubernetes",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "expectedArtifacts": [
+        {
+          "defaultArtifact": {
+            "artifactAccount": "docker-registry",
+            "id": "7be07c4a-af5a-4bf0-88d5-cff6553c441f",
+            "name": "ghcr.io/minhthong582000/arm",
+            "reference": "ghcr.io/minhthong582000/arm:main-5128643801",
+            "type": "docker/image",
+            "version": "main-5128643801"
+          },
+          "displayName": "current-running-docker image",
+          "id": "1c3ca63a-5bd0-4ede-9e00-b468a7633ff2",
+          "matchArtifact": {
+            "artifactAccount": "docker-registry",
+            "id": "6e413ca7-1c0c-4c82-84c0-ce8873ac1bb9",
+            "name": "ghcr.io/minhthong582000/arm",
+            "type": "docker/image"
+          },
+          "useDefaultArtifact": true,
+          "usePriorArtifact": true
+        }
+      ],
+      "failPipeline": false,
+      "location": "thomas-dev",
+      "manifestName": "deployment demo-main",
+      "mode": "static",
+      "name": "Find existing docker image for baseline",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "type": "findArtifactsFromResource"
+    },
+    {
+      "account": "spinnaker",
+      "cloudProvider": "kubernetes",
+      "manifestArtifact": {
+        "artifactAccount": "github",
+        "id": "7c2562ac-121a-41b2-bcf3-ec20e887fe62",
+        "name": "deploy/k8s/deploy-baseline.yaml",
+        "reference": "https://api.github.com/repos/minhthong582000/arm/contents/deploy/k8s/deploy-baseline.yaml",
+        "type": "github/file",
+        "version": "main"
+      },
+      "manifests": [],
+      "moniker": {
+        "app": "demo"
+      },
+      "name": "Deploy Baseline",
+      "namespaceOverride": "thomas-dev",
+      "refId": "2",
+      "requiredArtifactIds": [
+        "1c3ca63a-5bd0-4ede-9e00-b468a7633ff2"
+      ],
+      "requiredArtifacts": [],
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "artifact",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": true,
+          "strategy": "redblack"
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "spinnaker",
+      "cloudProvider": "kubernetes",
+      "expectedArtifacts": [],
+      "manifestArtifact": {
+        "artifactAccount": "github",
+        "id": "16ba4cef-b053-4fff-acab-3292415b28e8",
+        "name": "deploy/k8s/deploy-canary.yaml",
+        "reference": "https://api.github.com/repos/minhthong582000/arm/contents/deploy/k8s/deploy-canary.yaml",
+        "type": "github/file",
+        "version": "main"
+      },
+      "manifests": [],
+      "moniker": {
+        "app": "demo"
+      },
+      "name": "Deploy Canary",
+      "namespaceOverride": "thomas-dev",
+      "refId": "3",
+      "requiredArtifactIds": [
+        "2ae88f0b-dee1-46f8-923e-a4fbbff86aba"
+      ],
+      "requiredArtifacts": [],
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "artifact",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": true,
+          "strategy": "redblack"
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "analysisType": "realTime",
+      "canaryConfig": {
+        "baselineAnalysisOffsetInMins": "0",
+        "canaryAnalysisIntervalMins": "5",
+        "canaryConfigId": "bfacac93-f15a-47dc-8172-66905b6170b8",
+        "lifetimeDuration": "PT0H5M",
+        "metricsAccountName": "prometheus",
+        "scopes": [
+          {
+            "controlLocation": "thomas-dev",
+            "controlScope": "demo-baseline",
+            "experimentLocation": "thomas-dev",
+            "experimentScope": "demo-canary",
+            "extendedScopeParams": {},
+            "scopeName": "default",
+            "step": 60
+          }
+        ],
+        "scoreThresholds": {
+          "marginal": "70",
+          "pass": "90"
+        },
+        "storageAccountName": "minio"
+      },
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": true,
+      "failPipeline": false,
+      "name": "Canary Analysis",
+      "refId": "6",
+      "requisiteStageRefIds": [
+        "10"
+      ],
+      "type": "kayentaCanary"
+    },
+    {
+      "account": "spinnaker",
+      "cloudProvider": "kubernetes",
+      "comments": "We will NOT run if the canary fails.",
+      "failOnFailedExpressions": false,
+      "manifestArtifact": {
+        "artifactAccount": "github",
+        "id": "e7d21a57-fed7-4c97-ade8-7ff8a5aedccb",
+        "name": "deploy/k8s/deploy.yaml",
+        "reference": "https://api.github.com/repos/minhthong582000/arm/contents/deploy/k8s/deploy.yaml",
+        "type": "github/file",
+        "version": "main"
+      },
+      "manifests": [],
+      "moniker": {
+        "app": "demo"
+      },
+      "name": "Promote Canary to Prod",
+      "namespaceOverride": "thomas-dev",
+      "refId": "7",
+      "requiredArtifactIds": [
+        "2ae88f0b-dee1-46f8-923e-a4fbbff86aba"
+      ],
+      "requiredArtifacts": [],
+      "requisiteStageRefIds": [
+        "12"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "artifact",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": true,
+          "strategy": "redblack"
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "spinnaker",
+      "app": "demo",
+      "cloudProvider": "kubernetes",
+      "location": "thomas-dev",
+      "manifestName": "deployment demo-canary",
+      "mode": "static",
+      "name": "Scale Down Canary",
+      "refId": "8",
+      "replicas": "0",
+      "requisiteStageRefIds": [
+        "11"
+      ],
+      "type": "scaleManifest"
+    },
+    {
+      "account": "spinnaker",
+      "app": "demo",
+      "cloudProvider": "kubernetes",
+      "location": "thomas-dev",
+      "manifestName": "deployment demo-baseline",
+      "mode": "static",
+      "name": "Scale down baseline",
+      "refId": "9",
+      "replicas": "0",
+      "requisiteStageRefIds": [
+        "11"
+      ],
+      "type": "scaleManifest"
+    },
+    {
+      "account": "spinnaker",
+      "cloudProvider": "kubernetes",
+      "manifestArtifact": {
+        "artifactAccount": "github",
+        "id": "dc1e1fe3-ab13-47ff-bcfc-26e79a0193a7",
+        "name": "deploy/k8s/traefik-route-canary.yaml",
+        "reference": "https://api.github.com/repos/minhthong582000/arm/contents/deploy/k8s/traefik-route-canary.yaml",
+        "type": "github/file",
+        "version": "main"
+      },
+      "manifests": [],
+      "moniker": {
+        "app": "demo"
+      },
+      "name": "Adjust ingress to route to canary and baseline",
+      "namespaceOverride": "thomas-dev",
+      "refId": "10",
+      "requisiteStageRefIds": [
+        "2",
+        "3"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "artifact",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": false
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "spinnaker",
+      "cloudProvider": "kubernetes",
+      "comments": "DO THIS or... canaries when they're shut off break the app entirely due to how traefik works :(",
+      "manifestArtifact": {
+        "artifactAccount": "github",
+        "id": "0e74adf2-704f-4212-ad55-0c9b7d67bf93",
+        "name": "deploy/k8s/traefik-route-main.yaml",
+        "reference": "https://api.github.com/repos/minhthong582000/arm/contents/deploy/k8s/traefik-route-main.yaml",
+        "type": "github/file",
+        "version": "main"
+      },
+      "manifests": [],
+      "moniker": {
+        "app": "demo"
+      },
+      "name": "Remove baseline and canary",
+      "namespaceOverride": "thomas-dev",
+      "refId": "11",
+      "requisiteStageRefIds": [
+        "6"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "artifact",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": false
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Verify Canary Analysis results",
+      "preconditions": [
+        {
+          "context": {
+            "stageName": "Canary Analysis",
+            "stageStatus": "SUCCEEDED"
+          },
+          "failPipeline": true,
+          "type": "stageStatus"
+        }
+      ],
+      "refId": "12",
+      "requisiteStageRefIds": [
+        "11"
+      ],
+      "type": "checkPreconditions"
+    }
+  ],
+  "triggers": [
+    {
+      "account": "github-registry",
+      "enabled": true,
+      "expectedArtifactIds": [
+        "2ae88f0b-dee1-46f8-923e-a4fbbff86aba"
+      ],
+      "organization": "minhthong582000",
+      "registry": "ghcr.io",
+      "repository": "minhthong582000/arm",
+      "type": "docker"
+    }
+  ]
+}

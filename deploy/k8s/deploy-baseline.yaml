@@ -42,7 +42,7 @@ metadata:
   labels:
     app: demo
     type: baseline
-  name: demo-canary
+  name: demo-baseline
 spec:
   ports:
     - name: http
