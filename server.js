@@ -21,6 +21,14 @@ const httpRequestDurationMicroseconds = new client.Histogram({
 })
 register.registerMetric(httpRequestDurationMicroseconds)
 
+// Gauge metric to track max duration in seconds of the requests
+const httpRequestDurationMaxMicroseconds = new client.Gauge({
+  name: 'http_request_duration_max_seconds',
+  help: 'Max duration of HTTP requests in seconds',
+  labelNames: ['method', 'route', 'code']
+})
+register.registerMetric(httpRequestDurationMaxMicroseconds)
+
 // ------------------ App ------------------
 // Constants
 const PORT = 8080;
@@ -42,14 +50,30 @@ const profilerMiddleware = (req, res, next) => {
   const end = httpRequestDurationMicroseconds.startTimer()
   res.once('finish', () => {
     const duration = end({ route: req.baseUrl + req.path, method: req.method, code: res.statusCode });
+
+    // Update max duration metric
+    httpRequestDurationMaxMicroseconds
+      .labels(req.method, req.baseUrl + req.path, res.statusCode)
+      .set(duration);
+
     console.log('Request to %s Duration  %d', req.baseUrl + req.path, duration);
   });
   next();
 };
 app.use(profilerMiddleware);
 
+// Delay middleware to simulate a long running process
+const delayMiddleware = (req, res, next) => {
+  setTimeout(() => {
+    next();
+  }, Math.random() * 1000);
+};
+app.use(delayMiddleware);
+
 // Main route
 app.get('/', (req, res) => {
+  // Set status code
+  res.status(200);
   res.send('Hello World 11123s33s4');
 });
 
