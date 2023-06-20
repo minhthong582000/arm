@@ -63,12 +63,13 @@ jobs:
 
       - name: Build and push image
         id: build
-        uses: GalaxyFinX/actions/kaniko-build@main
+        uses: minhthong582000/actions/kaniko-build@main
         with:
           context: "./"
           dockerfile: "Dockerfile"
           no-push: ${{ github.event_name == 'pull_request' }}
           tags: |
             ${{ steps.meta.outputs.tags }}
+          reproducible: true
           cache: false
           # cache-repo: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
