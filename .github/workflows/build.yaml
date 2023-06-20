@@ -53,10 +53,22 @@ jobs:
             latest=false
             suffix=-${{github.run_id}}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     push: ${{ github.event_name != 'pull_request' }}
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push image
+        id: build
+        uses: GalaxyFinX/actions/kaniko-build@main
         with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          context: "./"
+          dockerfile: "Dockerfile"
+          no-push: ${{ github.event_name == 'pull_request' }}
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+          cache: false
+          # cache-repo: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
