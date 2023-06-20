@@ -74,7 +74,7 @@ app.use(delayMiddleware);
 app.get('/', (req, res) => {
   // Set status code
   res.status(200);
-  res.send('Hello World !');
+  res.send('Hello World 1 !');
 });
 
 // Start server
