@@ -1,0 +1,73 @@
+name: Update Terraform versions
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Every Sunday at 00:00
+  workflow_dispatch:
+
+env:
+  TERRAFORM_VERSIONS_FILE: "TF_VERSIONS"
+  DEFAULT_FROM_VERSION: "0.11.10"
+  PR_MESSAGE: "chore(image): Updating new Terraform versions"
+
+jobs:
+  update-tf-stable-versions:
+    name: Get all Terraform stable versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: "Get all stable release versions"
+        id: stable-versions
+        uses: armory-io/atipo-github-actions/release-versions@459235a9a3f5822e3c6479f6306e354e3db41c48
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          target_repo: "hashicorp/terraform"
+          from_version: 0.11.10
+          exclude_prereleases: true
+          exclude_rc: true
+
+      - name: Print all new versions
+        id: new-versions
+        run: |
+          cat <<EOF >tmp.txt
+          ${{ steps.stable-versions.outputs.versions }}
+          EOF
+          DIFF_OUTPUT="$(diff -u ${{ env.TERRAFORM_VERSIONS_FILE }} tmp.txt || :)"
+          if [ -n "$DIFF_OUTPUT" ]; then
+            EOF=$(openssl rand -hex 8)
+            echo "new_versions<<$EOF" >>$GITHUB_OUTPUT
+            echo "$DIFF_OUTPUT" >>$GITHUB_OUTPUT
+            echo "$EOF" >>$GITHUB_OUTPUT
+          fi
+          cp tmp.txt ${{ env.TERRAFORM_VERSIONS_FILE }}
+          rm tmp.txt
+        shell: bash
+
+      - name: Check if there is already a Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: check-pr
+        run: |
+          PR=$(gh pr list --head "${{ env.PR_MESSAGE }}" --state open --json number --jq ".[0].number")
+          if [[ -n "$PR" ]]; then
+            echo "Found open PR: $PR. Skipping..."
+            echo "pr_exists=true" >>$GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        id: create-pr
+        uses: peter-evans/create-pull-request@v5.0.1
+        if: ${{ steps.check-pr.outputs.pr_exists != 'true' && steps.new-versions.outputs.new_versions != '' }}
+        with:
+          commit-message: "${{ env.PR_MESSAGE }}"
+          title: "${{ env.PR_MESSAGE }}"
+          base: ${{ github.event.repository.default_branch }}
+          branch: chore/tf-${{ github.run_id }}
+          body: |
+            Found new Terraform version(s):
+            ```
+            ${{ steps.new-versions.outputs.new_versions }}
+            ```
