@@ -7,6 +7,7 @@ on:
 
 env:
   TERRAFORM_VERSIONS_FILE: "TF_VERSIONS"
+  IMAGE_VERSION_FILE: "VERSION"
   DEFAULT_FROM_VERSION: "0.11.10"
   PR_MESSAGE: "chore(image): Updating new Terraform versions"
 
@@ -33,7 +34,7 @@ jobs:
           exclude_prereleases: true
           exclude_rc: true
 
-      - name: Print all new versions
+      - name: Update Terraform versions file
         id: new-versions
         run: |
           cat <<EOF >tmp.txt
@@ -49,6 +50,14 @@ jobs:
           cp tmp.txt ${{ env.TERRAFORM_VERSIONS_FILE }}
           rm tmp.txt
         shell: bash
+
+      - name: Update version file
+        if: ${{ steps.new-versions.outputs.new_versions != '' }}
+        id: latest-version
+        run: |
+          # Get lastest version in ${{ env.TERRAFORM_VERSIONS_FILE }}
+          LATEST=$(tail -n 1 ${{ env.TERRAFORM_VERSIONS_FILE }})
+          echo "${{ env.DEFAULT_FROM_VERSION }}-${LATEST}" > ${{ env.IMAGE_VERSION_FILE }}
 
       - name: Check if there is already a Pull Request
         env:
